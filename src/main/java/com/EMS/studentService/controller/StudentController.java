@@ -1,5 +1,7 @@
 package com.EMS.studentService.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.EMS.studentService.entity.Course;
 import com.EMS.studentService.entity.Student;
 import com.EMS.studentService.studentService.StudentService;
 
@@ -26,7 +29,13 @@ public class StudentController {
 	public String status() {
 		return "i am ok";
 	}
-	
+	@GetMapping("/viewCourses")
+	public ResponseEntity<List<Course>> viewCourses(){
+		
+		List<Course> courses = this.studentService.getAllCourses();
+		 return ResponseEntity.ok(courses);
+		
+	}
 	@PostMapping("/register")
 	public ResponseEntity<Student> saveStudent(@RequestBody Student st){
 		
@@ -34,9 +43,9 @@ public class StudentController {
 		return new ResponseEntity<Student>(savedStudent, HttpStatus.CREATED) ;
 		
 	}
-	@PutMapping("/enroll/{email}/{c_id}")
-	public String enroll(@PathVariable String email,@PathVariable int c_id) {
-		String result=this.studentService.enrollCourse(email, c_id);
-		return result;
+	@PutMapping("/enroll/{std_id}/{c_id}")
+	public ResponseEntity<String> enroll(@PathVariable int std_id,@PathVariable int c_id) {
+		String result=this.studentService.enrollCourse(std_id, c_id);
+		return ResponseEntity.ok(result);
 	}
 }

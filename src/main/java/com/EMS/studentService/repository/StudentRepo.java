@@ -7,6 +7,6 @@ import com.EMS.studentService.entity.Student;
 
 
 @Repository
-public interface StudentRepo extends JpaRepository<Student, String> {
+public interface StudentRepo extends JpaRepository<Student, Integer> {
 
 }

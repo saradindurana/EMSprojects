@@ -26,30 +26,22 @@ public class StudentServiceImple implements StudentService{
 	@Autowired
 	private CourseRepo courseRepo;
 	
+	
+	
+//	create or register Student
 	@Override
 	public Student createStudent(Student st) {
-		System.out.println(st.getEmail_Address());
 		Student savedStudent= this.studentRepo.save(st);
 		return savedStudent;
 	}
 
-	@Override
-	public Student updateStudent(Student st, String userName) {
-		
-//		Do this later
-		Student student = this.studentRepo.findById(userName).orElseThrow();
-		return student;
-	}
 
-	@Override
-	public List<Student> getAllStudent() {
-		
-		return studentRepo.findAll();
-	}
+	
+
 
 	@Override
 	  @Transactional
-	    public String enrollCourse(String studentId, int courseId) {
+	    public String enrollCourse(int studentId, int courseId) {
 	        // Retrieve the student and course entities
 	        Student student = studentRepo.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student with id " + studentId + " not found"));
 
@@ -67,5 +59,28 @@ public class StudentServiceImple implements StudentService{
 	        courseRepo.save(course);
 	        return "enrolled";
 	    }
+
+	@Override
+	public List<Course> getAllCourses() {
+		
+		List <Course> courses=courseRepo.findAll();
+		return courses;
+	}
+
+	@Override
+	public String login(int id, String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+
+	@Override
+	public List<Student> getAllStudent() {
+		List<Student> students=studentRepo.findAll();
+		return students;
+	}
 
 }
