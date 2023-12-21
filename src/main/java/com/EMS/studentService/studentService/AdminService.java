@@ -8,6 +8,7 @@ public interface AdminService {
 	
 	Faculty addfaculty(Faculty faculty);
 	Faculty updateFaculty(Faculty faculty, int id);
-	Faculty removeFaculty (int id); 
+	String removeFaculty (int id); 
 	Course addCourse(Course course); 
+	String assignCourse(int f_id, int c_id);
 }

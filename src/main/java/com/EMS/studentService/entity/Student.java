@@ -1,7 +1,9 @@
 package com.EMS.studentService.entity;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,5 +40,7 @@ public class Student {
         inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private List<Course> courses;
-	
+    @ManyToMany
+    @JoinTable(name="user_role")
+	private Set<Role> roles = new HashSet<>();
 }
