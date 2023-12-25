@@ -14,4 +14,5 @@ public interface StudentService {
 	List<Student> getAllStudent();
 	String enrollCourse(int id, int c_id);
 	List<Course> getAllCourses();
+	Student getStudentByEmail(String email);
 }

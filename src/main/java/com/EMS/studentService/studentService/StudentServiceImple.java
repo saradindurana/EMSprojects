@@ -87,4 +87,13 @@ public class StudentServiceImple implements StudentService{
 		return students;
 	}
 
+
+
+
+
+	@Override
+	public Student getStudentByEmail(String email) {
+		return studentRepo.findByEmail(email).orElseThrow();
+	}
+
 }

@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.EMS.studentService.entity.Course;
 import com.EMS.studentService.entity.Student;
+import com.EMS.studentService.repository.StudentRepo;
 import com.EMS.studentService.studentService.StudentService;
+
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/student")
@@ -48,5 +51,13 @@ public class StudentController {
 		String result=this.studentService.enrollCourse(std_id, c_id);
 		return ResponseEntity.ok(result);
 	}
-	
+	@GetMapping("/getStudent/{email}")
+	public Mono <ResponseEntity<Student>> getStudent(@PathVariable String email){
+		System.out.println("EMAIL IS  " + email);
+		
+		 return Mono.justOrEmpty(studentService.getStudentByEmail(email))
+				 .map(student->ResponseEntity.ok(student))
+				 .defaultIfEmpty(ResponseEntity.notFound().build());
+		
+	}
 }
