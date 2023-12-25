@@ -27,7 +27,7 @@ public class StudentController {
 	
 	@GetMapping("/status")
 	public String status() {
-		return "i am ok";
+		return "Hey I am UP!!";
 	}
 	@GetMapping("/viewCourses")
 	public ResponseEntity<List<Course>> viewCourses(){
@@ -48,4 +48,5 @@ public class StudentController {
 		String result=this.studentService.enrollCourse(std_id, c_id);
 		return ResponseEntity.ok(result);
 	}
+	
 }

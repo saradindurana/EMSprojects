@@ -3,6 +3,7 @@ package com.EMS.studentService.studentService;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.EMS.studentService.entity.Course;
@@ -17,7 +18,9 @@ import jakarta.transaction.Transactional;
 @Service
 
 public class StudentServiceImple implements StudentService{
-
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder; 
 	
 	@Autowired
 	private StudentRepo studentRepo;
@@ -31,6 +34,7 @@ public class StudentServiceImple implements StudentService{
 //	create or register Student
 	@Override
 	public Student createStudent(Student st) {
+		st.setPassword(passwordEncoder.encode(st.getPassword()));
 		Student savedStudent= this.studentRepo.save(st);
 		return savedStudent;
 	}
