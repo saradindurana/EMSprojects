@@ -3,6 +3,7 @@ package com.EMS.studentService.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.EMS.studentService.entity.Course;
 import com.EMS.studentService.entity.Student;
 import com.EMS.studentService.repository.StudentRepo;
 import com.EMS.studentService.studentService.StudentService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/student")
+@SecurityRequirement(name = "bearerAuth")
 public class StudentController {
 	
 	@Autowired
@@ -34,9 +38,13 @@ public class StudentController {
 	}
 	@GetMapping("/viewCourses")
 	public ResponseEntity<List<Course>> viewCourses(){
-		
-		List<Course> courses = this.studentService.getAllCourses();
-		 return ResponseEntity.ok(courses);
+		WebClient webClient = WebClient.create();
+		Mono<List<Course>> courses = webClient.get()
+		        .uri("http://localhost:8040/admin/allcourses")
+		        .retrieve()
+		        .bodyToMono(new ParameterizedTypeReference<List<Course>>() {});
+		return courses.map(courseList -> ResponseEntity.ok().body(courseList))
+		        .defaultIfEmpty(ResponseEntity.notFound().build()).block();
 		
 	}
 	@PostMapping("/register")
@@ -46,14 +54,14 @@ public class StudentController {
 		return new ResponseEntity<Student>(savedStudent, HttpStatus.CREATED) ;
 		
 	}
-	@PutMapping("/enroll/{std_id}/{c_id}")
-	public ResponseEntity<String> enroll(@PathVariable int std_id,@PathVariable int c_id) {
-		String result=this.studentService.enrollCourse(std_id, c_id);
+	@PostMapping("/enroll/{email}/{c_id}")
+	public ResponseEntity<String> enroll(@PathVariable String email,@PathVariable int c_id) {
+		String result=this.studentService.enrollCourse(email, c_id);
 		return ResponseEntity.ok(result);
 	}
 	@GetMapping("/getStudent/{email}")
 	public Mono <ResponseEntity<Student>> getStudent(@PathVariable String email){
-		System.out.println("EMAIL IS  " + email);
+//		System.out.println("EMAIL IS  " + email);
 		
 		 return Mono.justOrEmpty(studentService.getStudentByEmail(email))
 				 .map(student->ResponseEntity.ok(student))

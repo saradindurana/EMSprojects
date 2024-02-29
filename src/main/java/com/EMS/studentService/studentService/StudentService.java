@@ -12,7 +12,7 @@ public interface StudentService {
 	Student createStudent(Student st);
 	String login(int id, String password);
 	List<Student> getAllStudent();
-	String enrollCourse(int id, int c_id);
+	String enrollCourse(String email, int c_id);
 	List<Course> getAllCourses();
 	Student getStudentByEmail(String email);
 }

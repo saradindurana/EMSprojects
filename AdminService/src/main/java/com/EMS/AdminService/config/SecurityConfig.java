@@ -1,21 +1,20 @@
-package com.EMS.studentService.config;
+package com.EMS.AdminService.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.EMS.studentService.security.JwtAuthEntryPoint;
-import com.EMS.studentService.security.JwtAuthenticationFilter;
+import com.EMS.AdminService.security.JwtAuthEntryPoint;
+import com.EMS.AdminService.security.JwtAuthenticationFilter;
 
 @Configuration
+@EnableWebMvc
 public class SecurityConfig {
 
 
@@ -23,11 +22,11 @@ public class SecurityConfig {
     private JwtAuthEntryPoint point;
     @Autowired
     private JwtAuthenticationFilter filter;
-    @Autowired
-    private UserDetailsService userdetailservice;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private UserDetailsService userdetailservice;
+//    
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,17 +35,18 @@ public class SecurityConfig {
     	.cors(cors->cors.disable())
     	.authorizeHttpRequests(auth->auth.
     			requestMatchers("/test").authenticated().
-    			requestMatchers("/auth/login").permitAll()
+    			requestMatchers("/admin/login").permitAll()
     			.requestMatchers("/h2-console/*").permitAll()
     			.requestMatchers("/h2-console").permitAll()
     			.requestMatchers("/h2/**").permitAll()
-    			.requestMatchers("/student/register").permitAll()
-    			.requestMatchers("/student/getStudent/*").permitAll()
+//    			.requestMatchers("/admin/getStudent/*").permitAll()
+    			.requestMatchers("/admin/enroll/**").permitAll()
     			.requestMatchers("/v3/api-docs").permitAll()
     			.requestMatchers("/v2/api-docs").permitAll()
     			.requestMatchers("/swagger-resources/**").permitAll()
     			.requestMatchers("/swagger-ui/**").permitAll()
     			.requestMatchers("/webjars/**").permitAll()
+    			.requestMatchers("/admin/allcourses").permitAll()
     			.anyRequest().authenticated()
     			)
     	
@@ -58,13 +58,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-    	DaoAuthenticationProvider provider= new DaoAuthenticationProvider();
-    	provider.setUserDetailsService(userdetailservice);
-    	provider.setPasswordEncoder(passwordEncoder);
-    	return provider;
-    }
+//    
+//    @Bean
+//    public DaoAuthenticationProvider daoAuthenticationProvider() {
+//    	DaoAuthenticationProvider provider= new DaoAuthenticationProvider();
+//    	provider.setUserDetailsService(userdetailservice);
+//    	provider.setPasswordEncoder(passwordEncoder);
+//    	return provider;
+//    }
 
 }

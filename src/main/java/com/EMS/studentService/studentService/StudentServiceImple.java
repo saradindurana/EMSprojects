@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.EMS.studentService.entity.Course;
 import com.EMS.studentService.entity.Student;
@@ -13,6 +14,7 @@ import com.EMS.studentService.repository.StudentRepo;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import reactor.core.publisher.Mono;
 
 
 @Service
@@ -45,23 +47,15 @@ public class StudentServiceImple implements StudentService{
 
 	@Override
 	  @Transactional
-	    public String enrollCourse(int studentId, int courseId) {
-	        // Retrieve the student and course entities
-	        Student student = studentRepo.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student with id " + studentId + " not found"));
+	    public String enrollCourse(String email, int c_id) {
 
-	        Course course = courseRepo.findById(courseId)
-	                .orElseThrow(() -> new EntityNotFoundException("Course with id " + courseId + " not found"));
-
-	        
-	        if (student.getCourses().contains(course)) {
-	            throw new IllegalStateException("Student is already enrolled in the course");
-	        }
-
-	        student.getCourses().add(course);
-	        course.getStudents().add(student);
-	        studentRepo.save(student);
-	        courseRepo.save(course);
-	        return "enrolled";
+		WebClient webClient = WebClient.create();
+        Mono<String> status = webClient.post()
+                .uri("http://localhost:8040/admin/enroll/{email}/{c_id}", email,c_id)
+                .retrieve()
+                .bodyToMono(String.class);
+        status.subscribe(student -> System.out.println(student));
+        return status.map(student -> student).block();
 	    }
 
 	@Override
